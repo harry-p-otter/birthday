@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Your Day!</title>
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #f9c5d1, #9795f0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 20px 40px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 50px;
+      background: #ff8fab;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+    .button:hover {
+      background: #ff6a9f;
+      transform: scale(1.05);
+    }
+    #giftPage {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      padding: 30px;
+    }
+    .gift-button {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .gift-button:hover {
+      background: #ffe0ec;
+      transform: scale(1.1) rotate(5deg);
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 80%;
+      text-align: center;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    audio {
+      display: none;
+    }
+
+    /* Styling for Wishes Page */
+    .wish-container {
+      text-align: center;
+      max-width: 700px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .wish-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .wish-container p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+    .next-button {
+      background-color: #ff8fab;
+      color: white;
+      font-size: 1.2rem;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .next-button:hover {
+      background-color: #ff6a9f;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background Music -->
+<audio autoplay loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+</audio>
+
+<!-- Confetti Animation -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.0/dist/confetti.browser.min.js"></script>
+
+<!-- Welcome Page -->
+<div id="welcomePage" class="animate__animated animate__fadeIn">
+  <h1>Welcome to Your Day!</h1>
+  <button class="button" onclick="openGift()">Open the Gift 🎁</button>
+</div>
+
+<!-- Gift Page -->
+<div id="giftPage" class="animate__animated">
+  <!-- 21 Buttons will be added here by JS -->
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal" onclick="closeModal()">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- Wishes Page (Initially hidden) -->
+<div id="wishesPage" style="display: none;">
+  <h2>Happy Birthday to the guy who thinks he’s young and talented (ofcourse he is ).</h2>
+  <div class="wish-container">
+    <p id="wishText"></p>
+  </div>
+  <button class="next-button" onclick="nextWish()">Next</button>
+</div>
+
+<!-- Script -->
+<script>
+  let buttonClicks = 0;
+
+  // Confetti Animation Function
+  function showConfetti() {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { x: 0.5, y: 0.5 }
+    });
+  }
+
+  // Sound Effect Function
+  function playClickSound() {
+    const clickSound = new Audio('https://www.soundjay.com/button/beep-07.wav');
+    clickSound.play();
+  }
+
+  // Gift page functionality
+  function openGift() {
+    gsap.to("#welcomePage", {opacity: 0, y: -100, duration: 0.8, onComplete: showGiftPage});
+  }
+
+  function showGiftPage() {
+    document.getElementById("welcomePage").style.display = "none";
+    const giftPage = document.getElementById("giftPage");
+    giftPage.style.display = "flex";
+    gsap.from("#giftPage", {opacity: 0, scale: 0.8, duration: 1});
+
+    // Custom names for buttons
+    const buttonNames = [
+      "Glimpse", "Vysheshika", "ChemExternal", "Sem AP", "Fest'22", "Hackathon", "On Tea", "2-1", "fools day 2022",
+      "first photo", "may 4th 2022", "police", "3-1 sem", "in,mi,ma", "challenges", "watch party","waffles",
+      "happy", "gift", "almost the end", "party"
+    ];
+
+    for (let i = 0; i < buttonNames.length; i++) {
+      const btn = document.createElement('div');
+      btn.className = "gift-button animate__animated animate__zoomIn";
+      btn.innerText = buttonNames[i];
+      btn.onclick = () => handleButtonClick(i);
+      giftPage.appendChild(btn);
+    }
+  }
+
+  function handleButtonClick(i) {
+    playClickSound();
+    showConfetti();
+    buttonClicks++;
+
+    // Show Next Button after all buttons are clicked
+    if (buttonClicks === 22) {
+      const nextButton = document.createElement('button');
+      nextButton.className = 'button next-button';
+      nextButton.innerText = 'Next';
+      nextButton.onclick = showWishesPage;
+      document.getElementById("giftPage").appendChild(nextButton);
+    }
+
+    const modal = document.getElementById("myModal");
+    const content = document.getElementById("modalContent");
+
+    const messages = [
+    "March 4th 2023 – Felt nilanti person unte baguntadi anipinchindi 🥹 anduke andaru antaaru <u> first impression is the best impression</u> ani, but danikante mundey nuvvu telusu... matladaledu gaa 😅",
+    "Kotha patta siggu lekunda chocolates teesukuna 🍫😋. “Em anukuntavo” ani kuda alochinchaledu hehehe 🤭",
+    "Little bit convo ayyindi. Baaga time gadichindi 🫶",
+    "Yedho formality ki adigav, nenu opesukuna 😂 intlo kuda opincheysa. Cinema ki ookay... KGH1 nenu epatiki chudaledu 😬 direct 2 chusina 🙈",
+    "Okay!! Met first block 4 lo and came up to year 4 😄",
+    "Nii valla konni activities lo participate cheyali, faculty tho mingle avvali ani telisindi 🤝. Appudu nannu full roast chestav. Life lo na ni antaga roast cheyyaledu evaru. The Roaster 🔥🤣",
+    "Nuvvu iche confidence tho on tea luu charuvulaki pothunde 😵‍💫 aa charuvu lo ne case padipoyindi. Mask tesina 😷 it's okay malli ichavanuko. Oka sari na sandal kuda pothunde 😭 but nuvvu save chesav 🙌",
+    "Sarele… gatam gataha 😌",
+    "Prank anukunnav kada buhuhuhuhaaa 😜",
+    "Chala rojulunchi wait chesina wallpaper pettadaniki... Finally April 1st petta ✨ happy! Adigina ventane opukunnavu. Appudu adigithe eppudu opukokunda untaav 😏",
+    "Neeku exam lekunda naa kosam vachavvv 🥺 Uncle’s Dave’s Café ☕ good time spend chesam. Happy hours lo 200 bill vastene shock ayyanu 😂",
+    "Naaku kuda telidu a day ye day ani, but aa roju nuvvu police uncle la unnavu 🚓 (yes compliment ra!) Outfit kuda set iyi unde 👔",
+    "2-2 dakka yedho seat arrangement ki… konni external factors valla chesam anuko 🤫. Cut chestey – 1st row lo last bench nuvvu, last row lo 1st bench nenu. Crazy combo ra idhi 🤯",
+    "Nuv day valla internship, review, project – anni complete ayyayi 💯 Andariki strict ayyav, naaku matram chill. Nenu explain kuda cheyyaledu 😅 Still O grade vachindi brooo 🏆",
+    "ECIL kuda datalenu annav… but Ameerpet vacheyyav (college work ani anukunna 😝) RTC-X-Roads movie cheppav… aa surprise aithe next level 🎉🎶",
+    "4-5 movies watch chesamemo party lo 🍿. Miss avuthunna aa days 🥲 Malli time machine vachi aa memories replay avvali ani untundi 💫",
+    "Food we love – WAFFLESSS 🧇💖 Death by chocolate add ayindi 🥵. Nuvvu tho food taste cheyyadam ante blissss 😍",
+    "Nuvvu yenni days, yenni hours happy ga unnavo naatho – naa idea ledu. But naaku matram full enjoy ayyi untadi 😌💕",
+    "Physical gift vodhu annav kada… so virtual gift 🎁. Nachite keep chey, lekapote delete chey 😂 Linkuuuu 🖇️ Telescope evdam anukunna but ne vodhu annav… edi cheap and silly ayina accept cheyali 😅",
+    "Cheppeyadhi inka chala undi 🥹 but limit ki vachindi. Naa kosam yevaru lenapudu nenu okay, but ni support lekunda nenu okay kadu 🥺 Mr. 6907 😌 Nuvvu unte inkevaru gurtu raru anipistadi 💯 and also naa lantidi vachinidi anni nuvvu yenni sarlu anukoni untavoo sorry for troubling you ",
+    "Party: And finallyyyy party evvadaniki ready undu 🥳 Rahul sir ki icheyaledu le ani ledhu, but naku matram kavali! Hahaha 😆🍰",
+  ];
+    if (i === 8) {
+  content.innerHTML = `
+    <p>${messages[i]}</p>
+    <img src="april_fools_image.jpg" alt="Gatam Gataha" style="max-width:50%; margin-top:10px;" />
+  `;
+} else {
+  content.innerHTML = `<p>${messages[i]}</p>`;
+}
+modal.style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+  }
+  function showFinalConfetti() {
+    confetti({
+      particleCount: 500,
+      spread: 200,
+      origin: { y: 0.5 }
+    });
+  }
+
+  // Wishes Page functionality
+  const birthdayMessage = `
+  <li> Dear Saketh,</li>
+  <p>Another year older, another year of roasting me like your personal hobby — if there were awards for sarcasm, you'd have a whole trophy shelf by now!</p>
+  <p>You’ve roasted me so much, I’m basically well-done at this point.</p>
+  <p>But jokes aside (for a second), you're not just my bestestest friend — you’re my built-in therapist, stand-up comedian, and human diary. Life with you is chaos, laughter, and unexpected wisdom.</p>
+  <p>Hope this day is full of laughter, cake, and less roasting (just kidding, I know you can’t help yourself). Here’s to another year of friendship, fun, and more memories!</p>
+  <li>With love and lots of roasting,<br>  
+  Your Roaster Victim <br></li>
+  `;
+  function typeEffect(element, text, speed = 30) {
+  let i = 0;
+  function typing() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
+    }
+  }
+  typing();
+}
+function showWishesPage() {
+  document.getElementById("giftPage").style.display = "none";
+  document.getElementById("wishesPage").style.display = "block";
+  showFinalConfetti()
+  const container = document.getElementById('wishText');
+  container.innerHTML = ''; // Clear before typing
+  const strippedText = birthdayMessage.replace(/<[^>]+>/g, ''); // Strip tags for typing effect
+  typeEffect(container, strippedText);
+}
+
+function nextWish() {
+  alert("Wishing you the best! 🎉");
+}
+</script>
+</body>
+</html>
